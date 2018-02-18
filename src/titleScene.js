@@ -25,9 +25,9 @@ class titleScene extends Phaser.Scene{
             x: 0, y: 0, w: 200, h: 200, color: 0x888888 
         });
         scratchSheet.generateTexture('bgBox', 200,200);
-        for(let i = 0; i < 1600; i++){
+        for(let i = 0; i < 3200; i++){
             var bgBox = this.add.image( (Math.random()*800*5)|0, (Math.random()*480*5)|0, 'bgBox')
-            .setScale(Math.random(), Math.random());;
+            .setScale(Math.random()*.5, Math.random()*.5);;
             bgBox.alphaBottomLeft = Math.random()*.5;
             bgBox.alphaBottomRight = Math.random()*.5;
             bgBox.alphaTopLeft = Math.random()*.5;
@@ -36,6 +36,7 @@ class titleScene extends Phaser.Scene{
             bgBox.tintTopLeft = Math.random()*16000000;
             bgBox.tintBottomRight = Math.random()*16000000;
             bgBox.tintBottomLeft = Math.random()*16000000;
+            bgBox.scrollFactorX = bgBox.scrollFactorY = .8 - Math.random()*.3;
             //bgBox.angle = Math.random()*360;
         }
 
@@ -50,28 +51,30 @@ class titleScene extends Phaser.Scene{
         this.box = this.physics.add.image(400, 300, 'box').setInteractive();
         this.box.setBounce(.4).setCollideWorldBounds(true);
         this.box.alphaBottomLeft = .5;
-        this.cameras.main.startFollow(this.box);
+        this.cameras.main.startFollow(this.box).setBounds(0,0,800*5+48,480*5+48);
 
         //platforms
         this.platforms = this.physics.add.staticGroup();
         this.drawBox({
             graphics: scratchSheet,
-            x: 0, y: 0, w: 800, h: 20, color: 0x000088 
+            x: 0, y: 0, w: 800, h: 20, color: 0x444488 
         });
         scratchSheet.generateTexture('floor', 800, 20);
-        this.platforms.create(400, 480-20, 'floor');
+        this.platforms.create(400, 480-20, 'floor').setBlendMode('ADD');
 
-        for(let i = 0; i < 100; i++){
-            this.platforms.create(Math.random()*800*5, 480+Math.random()*480*4, 'floor')
+        for(let i = 0; i < 300; i++){
+            var platform = this.platforms.create(Math.random()*800*5, 480+Math.random()*480*4, 'floor')
             .setScale(.2 * Math.random(), 1)
-            .refreshBody();
+            .refreshBody().setBlendMode('ADD');
+            
         }
 
         //collide player with platforms
         this.physics.add.collider(this.box, this.platforms);
 
 
-        this.debugText = this.add.text(10,10, 'velocity y: ' + this.box.body.velocity.y, { fontSize: '10px', fill: '#fff'});
+        this.debugText = this.add.text(10,10, ' ', { fontSize: '10px', fill: '#fff'})
+        this.debugText.scrollFactorX = this.debugText.scrollFactorY = 0;
 
 
     }
@@ -81,7 +84,7 @@ class titleScene extends Phaser.Scene{
         this.box.on('pointerdown', function() {
             this.setTint(Math.random() * 16000000);
         })
-        if(this.box.body.touching.down || this.box.body.blocked.down)this.box.canJump = true;
+        if(this.box.body.touching.down || this.box.body.blocked.down || this.box.body.velocity.y > 0)this.box.canJump = true;
         if(this.controls.up.isDown && this.box.canJump){
             this.box.setVelocity(0, -550);
             this.box.canJump = false;
