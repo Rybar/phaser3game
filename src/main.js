@@ -1,25 +1,27 @@
 import phaser from '../../phaser/dist/phaser'
 import titleScene from './titleScene'
+import gameScene from './gameScene'
 
 
 let config = {
     type: Phaser.AUTO,
     parent: 'content',
-    width: 800,
-    height: 480,
+    width: 320,
+    height: 180,
     resolution: 1,
-    zoom: 2,
+    zoom: 4,
     pixelArt: true,
     scaleMode: 1, //nearest neighbor
     physics: {
         default: 'arcade',
         arcade: {
-            gravity: { y: 900 },
+            gravity: { y: 700 },
             debug: false
         }
     },
     scene: [
-      titleScene
+      titleScene,
+      gameScene
     ]
 };
 
