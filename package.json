@@ -1,8 +1,8 @@
 {
-  "name": "Phaser3ES6Webpack",
+  "name": "Phaser3ProtoGame",
   "version": "1.0.0",
   "description": "",
-  "author": "niklas berg <me@niklasberg.se>",
+  "author": "Ryan Malm",
   "main": "index.js",
   "scripts": {
     "dev": "webpack",
