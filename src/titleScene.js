@@ -5,7 +5,7 @@ class titleScene extends Phaser.Scene{
     }
 
     preload(){
-        this.load.bitmapFont('gem', '../assets/fonts/gem.png', '../assets/fonts/gem.xml')
+        this.load.bitmapFont('gem', 'assets/fonts/gem.png', 'assets/fonts/gem.xml')
     }
 
     create(){
