@@ -11,8 +11,8 @@ class gameScene extends Phaser.Scene{
     create(){
         window.WIDTH = 320;
         window.HEIGHT = 180;
-        window.W_WIDTH = 20;
-        window.W_HEIGHT = 20;
+        window.W_WIDTH = 50;
+        window.W_HEIGHT = 50;
         this.cameras.main.flash(500, 0,0,0); //fade in from black.
 
         //creates keyboard keys for left, right, up, down, shift and space
@@ -46,10 +46,10 @@ class gameScene extends Phaser.Scene{
         //background generation
         this.drawCircle({
             graphics: scratchSheet,
-            x: 100, y: 100, r: 100, color: 0x888888 
+            x: 200, y: 200, r: 200, color: 0x888888 
         });
-        scratchSheet.generateTexture('bgBox', 200,200);
-        for(let i = 0; i < 12800; i++){
+        scratchSheet.generateTexture('bgBox', 400,400);
+        for(let i = 0; i < 25600; i++){
             var scale = Math.random()*.5;
             var bgBox = this.add.image( (Math.random()*WIDTH*W_WIDTH)|0, (Math.random()*HEIGHT*W_HEIGHT)|0, 'bgBox')
             .setScale(scale, scale);
@@ -94,9 +94,9 @@ class gameScene extends Phaser.Scene{
         scratchSheet.generateTexture('floor', WIDTH, 10);
         this.platforms.create(160, HEIGHT-10, 'floor').setBlendMode('ADD');
 
-        for(let i = 0; i < 400; i++){
+        for(let i = 0; i < 1200; i++){
             var platform = this.platforms.create(Math.random()*WIDTH*W_WIDTH, Math.random()*HEIGHT*W_HEIGHT, 'floor')
-            .setScale(.2 + Math.random() * .2, 1)
+            .setScale(.4 + Math.random() * .2, 1)
             .refreshBody().setBlendMode('ADD');
             
         }
