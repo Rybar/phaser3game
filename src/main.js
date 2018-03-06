@@ -1,4 +1,4 @@
-import phaser from '../../phaser/dist/phaser'
+import phaser from '../../phaser/build/phaser' ///Users/ryanmalm/Sites/dev/phaser/build/phaser.js
 import titleScene from './titleScene'
 import gameScene from './gameScene'
 

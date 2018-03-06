@@ -32,6 +32,7 @@ class titleScene extends Phaser.Scene{
             var that = this;
             setTimeout(function(){that.scene.start('gameScene')}, 250)
         }, this )
+        console.log(this.textures.exists('titleSplash'))
     }
 
     update(){

@@ -1,3 +1,5 @@
+import { SSL_OP_ALLOW_UNSAFE_LEGACY_RENEGOTIATION } from "constants";
+
 class gameScene extends Phaser.Scene{
 
     constructor(){
@@ -11,8 +13,8 @@ class gameScene extends Phaser.Scene{
     create(){
         window.WIDTH = 320;
         window.HEIGHT = 180;
-        window.W_WIDTH = 50;
-        window.W_HEIGHT = 50;
+        window.W_WIDTH = 10;
+        window.W_HEIGHT = 10;
         this.cameras.main.flash(500, 0,0,0); //fade in from black.
 
         //creates keyboard keys for left, right, up, down, shift and space
@@ -49,7 +51,7 @@ class gameScene extends Phaser.Scene{
             x: 200, y: 200, r: 200, color: 0x888888 
         });
         scratchSheet.generateTexture('bgBox', 400,400);
-        for(let i = 0; i < 25600; i++){
+        for(let i = 0; i < 10000; i++){
             var scale = Math.random()*.5;
             var bgBox = this.add.image( (Math.random()*WIDTH*W_WIDTH)|0, (Math.random()*HEIGHT*W_HEIGHT)|0, 'bgBox')
             .setScale(scale, scale);
@@ -74,7 +76,7 @@ class gameScene extends Phaser.Scene{
         scratchSheet.generateTexture('box', 8, 16);
         //and use it to make an image object, add it to the game world
         this.box = this.physics.add.image(160, 90, 'box').setInteractive();
-        this.box.setBounce(.4).setCollideWorldBounds(true);
+        this.box.setBounce(.3).setCollideWorldBounds(true);
         //this.box.alphaBottomRight = .2;
         this.box.tintTopRight = 0x00FF00; //yellow
         this.box.tintTopLeft = 0xFFFF00;  //green  
@@ -89,26 +91,36 @@ class gameScene extends Phaser.Scene{
         this.platforms = this.physics.add.staticGroup();
         this.drawBox({
             graphics: scratchSheet,
-            x: 0, y: 0, w: WIDTH, h: 10, color: 0x444488 
+            x: 0, y: 0, w: 10, h: 10, color: 0x444488 
         });
-        scratchSheet.generateTexture('floor', WIDTH, 10);
-        this.platforms.create(160, HEIGHT-10, 'floor').setBlendMode('ADD');
+        this.drawBox({
+            graphics: scratchSheet,
+            x: 1, y: 1, w: 8, h: 8, color: 0x000000
+        });
+        scratchSheet.generateTexture('floor', 10, 10);
+        //this.platforms.create(160, HEIGHT-10, 'floor').setBlendMode('ADD');
+        var platformFloor = this.add.tileSprite(160, HEIGHT-10, WIDTH, 10, 'floor').setBlendMode('ADD');
+        this.physics.world.enableBody(platformFloor)
+        this.platforms.add(platformFloor)
 
-        for(let i = 0; i < 1200; i++){
+        for(let i = 0; i < 300; i++){
             var platform = this.platforms.create(Math.random()*WIDTH*W_WIDTH, Math.random()*HEIGHT*W_HEIGHT, 'floor')
-            .setScale(.4 + Math.random() * .2, 1)
+            .setScale(.2 + Math.random() * .2, 1)
             .refreshBody().setBlendMode('ADD');
             
         }
 
         //collide player with platforms
         this.physics.add.collider(this.box, this.platforms);
+        this.physics.add.collider(this.box, platformFloor);
 
 
         // this.debugText = this.add.text(10,10, ' ', { fontSize: '10px', fill: '#fff'})
         // this.debugText.scrollFactorX = this.debugText.scrollFactorY = 0;
 
         emitter.startFollow(this.box);
+        this.box.body.checkCollision.up = false;
+        console.log(this.box.body.checkCollision)
 
         
     }
