@@ -99,20 +99,21 @@ class gameScene extends Phaser.Scene{
         });
         scratchSheet.generateTexture('floor', 10, 10);
         //this.platforms.create(160, HEIGHT-10, 'floor').setBlendMode('ADD');
-        var platformFloor = this.add.tileSprite(160, HEIGHT-10, WIDTH, 10, 'floor').setBlendMode('ADD');
-        this.physics.world.enableBody(platformFloor)
-        this.platforms.add(platformFloor)
+        this.platformFloor = this.add.tileSprite(160, HEIGHT-10, WIDTH, 10, 'floor')
+        //this.physics.world.enable(this.platformFloor, 1) //0: dynamic, 1: static
+        this.platforms.add(this.platformFloor)
 
         for(let i = 0; i < 300; i++){
-            var platform = this.platforms.create(Math.random()*WIDTH*W_WIDTH, Math.random()*HEIGHT*W_HEIGHT, 'floor')
-            .setScale(.2 + Math.random() * .2, 1)
-            .refreshBody().setBlendMode('ADD');
+            //var platform = this.platforms.create(Math.random()*WIDTH*W_WIDTH, Math.random()*HEIGHT*W_HEIGHT, 'floor')
+            var platform = this.add.tileSprite(Math.random()*WIDTH*W_WIDTH, Math.random()*HEIGHT*W_HEIGHT, Math.random()*100, 10+Math.random()*5, 'floor');
+            
+            this.platforms.add(platform);
             
         }
 
         //collide player with platforms
         this.physics.add.collider(this.box, this.platforms);
-        this.physics.add.collider(this.box, platformFloor);
+        //this.physics.add.collider(this.box, this.platformFloor);
 
 
         // this.debugText = this.add.text(10,10, ' ', { fontSize: '10px', fill: '#fff'})
