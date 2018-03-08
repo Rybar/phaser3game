@@ -36,10 +36,7 @@ class titleScene extends Phaser.Scene{
     }
 
     update(){
-        //is there a better way to do this?
-    //    if(this.cameras.main._fadeAlpha == 1.0){
-    //        this.scene.start('gameScene');
-    //    }     
+        
     }
 
     drawBox(cfg){
@@ -52,10 +49,6 @@ class titleScene extends Phaser.Scene{
         textWave += .007
         return data;
     }
-
-     transition(scene, key){
-        
-     }
 
 }
 

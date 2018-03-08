@@ -13,8 +13,9 @@ class gameScene extends Phaser.Scene{
     create(){
         window.WIDTH = 320;
         window.HEIGHT = 180;
-        window.W_WIDTH = 10;
-        window.W_HEIGHT = 10;
+        window.W_WIDTH = 14;
+        window.W_HEIGHT = 50;
+        window.iter = 0;
         this.cameras.main.flash(500, 0,0,0); //fade in from black.
 
         //creates keyboard keys for left, right, up, down, shift and space
@@ -27,43 +28,45 @@ class gameScene extends Phaser.Scene{
         //using Phaser's graphics object, which works similar to a 2d canvas context. 
         var scratchSheet = this.make.graphics({x: 0, y: 0, add: false});
 
-        //particles--------
+        //particles texture
         this.drawBox({
             graphics: scratchSheet,
             x: 0, y: 0, w: 5, h: 5, color: 0x112211 
         })
+        //setup particles here for draw order, we want them to draw behind the player   
         scratchSheet.generateTexture('particle', 5, 5);
         var particles = this.add.particles('particle');
+        
         var emitter = particles.createEmitter({
-            speed: { min: -40, max: 40 },
+            speed: { min: -2, max: 2 },
             y: {min: -8, max: 8},
-            alpha: {start: .7, end: 0},
+            alpha: {start: .5, end: 0},
             gravity: { x: 0, y: 200 },
-            scale: { start: 1, end: 3 },
-            quantity: 4,
+            scale: { start: 1.5, end: 0 },
+            quantity: 2,
             lifespan: 500,
             blendMode: 'ADD'
         });
 
-        //background generation
+        //circles background generation
         this.drawCircle({
             graphics: scratchSheet,
-            x: 200, y: 200, r: 200, color: 0x888888 
+            x: 200, y: 200, r: 200, color: 0xEEEEEE 
         });
         scratchSheet.generateTexture('bgBox', 400,400);
         for(let i = 0; i < 10000; i++){
-            var scale = Math.random()*.5;
+            var scale = Math.random()*.4;
             var bgBox = this.add.image( (Math.random()*WIDTH*W_WIDTH)|0, (Math.random()*HEIGHT*W_HEIGHT)|0, 'bgBox')
             .setScale(scale, scale);
             bgBox.alphaBottomLeft = Math.random()*.3;
             bgBox.alphaBottomRight = Math.random()*.3;
-            bgBox.alphaTopLeft = Math.random()*.3;
-            bgBox.alphaTopRight = Math.random()*.3;
+            bgBox.alphaTopLeft = Math.random()*.8;
+            bgBox.alphaTopRight = Math.random()*.8;
             bgBox.tintTopRight = Math.random()*16000000;
             bgBox.tintTopLeft = Math.random()*16000000;
             bgBox.tintBottomRight = Math.random()*16000000;
             bgBox.tintBottomLeft = Math.random()*16000000;
-            bgBox.scrollFactorX = bgBox.scrollFactorY = .8 - Math.random()*.3;
+            bgBox.scrollFactorX = bgBox.scrollFactorY = .8 - scale;
             //bgBox.angle = Math.random()*360;
         }
 
@@ -75,9 +78,11 @@ class gameScene extends Phaser.Scene{
         //now we create a texture key
         scratchSheet.generateTexture('box', 8, 16);
         //and use it to make an image object, add it to the game world
-        this.box = this.physics.add.image(160, 90, 'box').setInteractive();
+        this.box = this.physics.add.image(WIDTH*W_WIDTH/2, W_HEIGHT*HEIGHT-HEIGHT, 'box').setInteractive();
+        //a bit of bounce feels good
         this.box.setBounce(.3).setCollideWorldBounds(true);
-        //this.box.alphaBottomRight = .2;
+
+        //playing around with individual tint corners, just for kicks
         this.box.tintTopRight = 0x00FF00; //yellow
         this.box.tintTopLeft = 0xFFFF00;  //green  
         this.box.tintBottomRight = 0x0000FF;  //blue 
@@ -85,48 +90,56 @@ class gameScene extends Phaser.Scene{
 
         this.cameras.main.startFollow(this.box).setBounds(0,0,WIDTH*W_WIDTH,HEIGHT*W_HEIGHT);
         
-
-
         //platforms
         this.platforms = this.physics.add.staticGroup();
-        this.drawBox({
-            graphics: scratchSheet,
-            x: 0, y: 0, w: 10, h: 10, color: 0x444488 
-        });
-        this.drawBox({
-            graphics: scratchSheet,
-            x: 1, y: 1, w: 8, h: 8, color: 0x000000
-        });
-        scratchSheet.generateTexture('floor', 10, 10);
-        //this.platforms.create(160, HEIGHT-10, 'floor').setBlendMode('ADD');
-        this.platformFloor = this.add.tileSprite(160, HEIGHT-10, WIDTH, 10, 'floor')
-        //this.physics.world.enable(this.platformFloor, 1) //0: dynamic, 1: static
-        this.platforms.add(this.platformFloor)
+        for(let i = 0; i <=18000; i++){
+            this.drawBox({
+                graphics: scratchSheet,
+            x: Math.random()*100|0, y: Math.random()*100|0, w: 1, h: 1, color: Math.random()*16000000
+            })
+        }
+        
+        scratchSheet.generateTexture('floor', 99, 99);
+        
+        for(let i = 0; i < 2000; i++){
+            let bodyWidth = ((3 + Math.random()*7)|0)*9 + 1;
+            var platform = this.add.tileSprite(
+                Math.random()*WIDTH*W_WIDTH,
+                Math.random()*HEIGHT*W_HEIGHT,
+                bodyWidth, 10, 'floor')
+                .setBlendMode('ADD')
+            //gradient to transparent by setting bottom two corners
+                .setAlpha(1,0,0,1)
 
-        for(let i = 0; i < 300; i++){
-            //var platform = this.platforms.create(Math.random()*WIDTH*W_WIDTH, Math.random()*HEIGHT*W_HEIGHT, 'floor')
-            var platform = this.add.tileSprite(Math.random()*WIDTH*W_WIDTH, Math.random()*HEIGHT*W_HEIGHT, Math.random()*100, 10+Math.random()*5, 'floor');
-            
+            this.physics.world.enable(platform, 1);
+            platform.body.width = bodyWidth;
+            platform.body.height = 10;
+            platform.tintTopLeft = 0x0088ff;
+            platform.tintBottomRight = 0x0088ff;
+            platform.tintBottomLeft = 0x0000ff;
+            platform.tintTopRight = 0x0000ff;
+        //so all platforms behave as 'cloud' platforms
+            platform.body.checkCollision.down = false;
             this.platforms.add(platform);
             
         }
 
-        //collide player with platforms
+    //collide player with platforms
         this.physics.add.collider(this.box, this.platforms);
-        //this.physics.add.collider(this.box, this.platformFloor);
 
+    //we init the emitter above and set after for draw order.
+        emitter.startFollow(this.box);        
 
-        // this.debugText = this.add.text(10,10, ' ', { fontSize: '10px', fill: '#fff'})
-        // this.debugText.scrollFactorX = this.debugText.scrollFactorY = 0;
-
-        emitter.startFollow(this.box);
-        this.box.body.checkCollision.up = false;
-        console.log(this.box.body.checkCollision)
-
-        
+        console.log(this.platforms.children.entries[0])
     }
 
     update(){
+        //
+
+        let slabs = this.platforms.getChildren();
+        for(let i = 0; i < slabs.length; i++){
+            slabs[i].tilePositionY += .25;
+        }
         
         this.box.on('pointerdown', function() {
             this.setTint(Math.random() * 16000000);
