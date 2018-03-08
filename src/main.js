@@ -6,12 +6,11 @@ import gameScene from './gameScene'
 let config = {
     type: Phaser.AUTO,
     parent: 'content',
-    width: 320,
-    height: 180,
+    width: (1280/3)|0,
+    height: (720/3)|0,
     resolution: 1,
-    zoom: 4,
+    zoom: 3,
     pixelArt: true,
-    scaleMode: 1, //nearest neighbor
     physics: {
         default: 'arcade',
         arcade: {
@@ -24,5 +23,7 @@ let config = {
       gameScene
     ]
 };
-
+window.WIDTH = config.width;
+window.HEIGHT = config.height;
+console.log(config.width)
 let game = new Phaser.Game(config);

@@ -18,13 +18,13 @@ class titleScene extends Phaser.Scene{
         var scratchSheet = this.make.graphics({x: 0, y: 0, add: false});
         //make a screen-sized green box, a placeholder for the title screen
         this.drawBox({
-            graphics: scratchSheet, x: 0, y:0, w:320, h:180, color: 0x008800
+            graphics: scratchSheet, x: 0, y:0, w:WIDTH, h:HEIGHT, color: 0x008800
         })
-        scratchSheet.generateTexture('titleSplash', 320,180);
-        this.add.image(160,90, 'titleSplash');
+        scratchSheet.generateTexture('titleSplash', WIDTH,HEIGHT);
+        this.add.image(WIDTH/2,HEIGHT/2, 'titleSplash');
 
-        var text = this.add.dynamicBitmapText(8,90-32, 'gem', 'PROTOGAME', 64);
-        var text2 = this.add.bitmapText(100,150,'gem','Click to start', 16);
+        var text = this.add.dynamicBitmapText(16*1.25,(90-32)*1.25, 'gem', 'PROTOGAME', 64*1.25);
+        var text2 = this.add.bitmapText(120*1.25,150*1.25,'gem','Click to start', 16);
         text.setDisplayCallback(this.waveText);
         //
         this.input.once('pointerdown', function(){
@@ -32,7 +32,6 @@ class titleScene extends Phaser.Scene{
             var that = this;
             setTimeout(function(){that.scene.start('gameScene')}, 250)
         }, this )
-        console.log(this.textures.exists('titleSplash'))
     }
 
     update(){
